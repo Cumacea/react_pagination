@@ -1,4 +1,5 @@
-import React, { useState } from 'react';
+import React from 'react';
+import { useSearchParams } from 'react-router-dom';
 import './App.css';
 import { getNumbers } from './utils';
 import { Pagination } from './components/Pagination';
@@ -8,16 +9,17 @@ const TOTAL = 42;
 const items = getNumbers(1, TOTAL).map(n => `Item ${n}`);
 
 export const App: React.FC = () => {
-  const [perPage, setPerPage] = useState(5);
-  const [currentPage, setCurrentPage] = useState(1);
+  const [searchParams, setSearchParams] = useSearchParams();
+
+  const currentPage = Number(searchParams.get('page') || 1);
+  const perPage = Number(searchParams.get('perPage') || 5);
 
   const onPageChange = (page: number) => {
-    setCurrentPage(page);
+    setSearchParams({ page: String(page), perPage: String(perPage) });
   };
 
   const handleSelectChange = (event: React.ChangeEvent<HTMLSelectElement>) => {
-    setPerPage(Number(event.target.value));
-    setCurrentPage(1);
+    setSearchParams({ page: '1', perPage: event.target.value });
   };
 
   const start = (currentPage - 1) * perPage;
